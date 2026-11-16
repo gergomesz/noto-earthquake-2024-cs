@@ -1,4 +1,4 @@
-# main calculations: distances, wadati plot, and locating the quake (S-P circles + P-only grid search)
+
 import csv, json, numpy as np
 from pathlib import Path
 from obspy import UTCDateTime as U
@@ -6,7 +6,7 @@ from obspy.taup import TauPyModel
 from obspy.geodetics import locations2degrees, gps2dist_azimuth
 
 ROOT = Path(__file__).resolve().parents[1]
-REF = U("2024-01-01T07:10:00")  # reference time (like 10:00:00 in the practical)
+REF = U("2024-01-01T07:10:00")  
 USGS = dict(lat=37.487, lon=137.271, depth=10.0, time="2024-01-01T07:10:09")
 rows = list(csv.DictReader(open(ROOT / "data/picks.csv")))
 for r in rows:
@@ -65,16 +65,14 @@ for r in rows:
             note=r["note"],
         )
     )
-# wadati plot
+
 tp = np.array([o["tp"] for o in out])
 sp = np.array([o["sp"] for o in out])
 b, a = np.polyfit(tp, sp, 1)
 pred = a + b * tp
 r2 = 1 - np.sum((sp - pred) ** 2) / np.sum((sp - sp.mean()) ** 2)
 x0 = -a / b
-t0_wadati = REF + x0
-# grid search using only P arrivals (depth fixed at 10km)
-# for each point the best origin time is just the mean residual
+
 lats = np.arange(30, 45, 0.05)
 lons = np.arange(128, 147, 0.05)
 best = (1e9, None)
@@ -91,7 +89,7 @@ for i, la in enumerate(lats):
     res = P_obs[None, :] - tt - t0[:, None]
     G[i] = np.sqrt(np.mean(res**2, axis=1))
 i, j = np.unravel_index(np.argmin(G), G.shape)
-# finer grid around the best point
+
 lats2 = np.arange(lats[i] - 0.1, lats[i] + 0.1, 0.005)
 lons2 = np.arange(lons[j] - 0.1, lons[j] + 0.1, 0.005)
 bestv = 1e9
@@ -112,7 +110,7 @@ for o, rr in zip(out, pres):
     o["p_resid"] = round(float(rr), 2)
 np.save(ROOT / "data/grid_rms.npy", G)
 np.save(ROOT / "data/grid_axes.npy", np.array([lats[0], lats[-1], lons[0], lons[-1]]))
-# point that fits the S-P circles best (weighted by how sure each S pick is)
+
 dg = np.array([o["d_graph_deg"] for o in out])
 w = 1 / np.array([o["s_unc"] for o in out])
 bestc = (1e9, None)
