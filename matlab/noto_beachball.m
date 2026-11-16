@@ -1,15 +1,11 @@
-% beachball for the JMA mechanism + checking my first motions against it
-% lower hemisphere, shaded = compression
-strike = 47; dip = 37; rake = 100; % JMA, the plane that dips SE
+strike = 47; dip = 37; rake = 100;
 P = read_picks();
-% azimuth and takeoff angle to each station (from the python script)
 az_sta = [144.1 41.4 274.1 20.5 232.4 162.5 257.7 205.3 32.2];
 toa_sta = [94.7 45.8 45.8 45.7 35.1 28.4 27.3 24.5 23.3];
 
-% radiation pattern over a grid
 [az, inc] = meshgrid(linspace(0,360,361), linspace(0,90,91));
 R = radP(strike, dip, rake, az, inc);
-r = inc/90; % same projection obspy uses
+r = inc/90;
 X = r .* sind(az); Y = r .* cosd(az);
 
 figure('Color','w','Position',[100 100 650 650]); hold on; axis equal off;
@@ -18,7 +14,7 @@ th = linspace(0, 2*pi, 400); plot(sin(th), cos(th), 'k', 'LineWidth',1.5);
 text(0, 1.08, 'N', 'HorizontalAlignment','center', 'FontWeight','bold');
 for k = 1:numel(az_sta)
     a = az_sta(k); t = toa_sta(k);
-    if t > 90, t = 180 - t; a = mod(a + 180, 360); end % flip upgoing rays
+    if t > 90, t = 180 - t; a = mod(a + 180, 360); end
     x = (t/90)*sind(a); y = (t/90)*cosd(a);
     switch P.pol(k)
         case  1, plot(x, y, 'ko', 'MarkerFaceColor','k', 'MarkerSize',10);

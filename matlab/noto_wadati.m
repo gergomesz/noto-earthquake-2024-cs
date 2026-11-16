@@ -1,11 +1,10 @@
-% wadati plot: S-P against P arrival, the x-intercept is the origin time
 P = read_picks();
 x = P.tp;  y = P.ts - P.tp;
 c = polyfit(x, y, 1);
 yhat = polyval(c, x);
 R2 = 1 - sum((y - yhat).^2) / sum((y - mean(y)).^2);
-x0 = -c(2) / c(1); % seconds after 07:10:00
-VpVs = 1 + c(1); % slope is Vp/Vs - 1
+x0 = -c(2) / c(1);
+VpVs = 1 + c(1);
 
 t0 = 7*3600 + 10*60 + x0;
 hh = floor(t0/3600); mm = floor(mod(t0,3600)/60); ss = mod(t0,60);

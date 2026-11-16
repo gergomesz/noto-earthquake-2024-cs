@@ -1,6 +1,3 @@
-% locating with only the P arrivals
-% for every grid point, predict the P times, fit the origin time and keep the rms
-% best point = smallest rms
 P = read_picks(); T = read_traveltimes();
 lats = 30:0.05:45;  lons = 128:0.05:147;
 rms = zeros(numel(lats), numel(lons)); t0g = rms;
