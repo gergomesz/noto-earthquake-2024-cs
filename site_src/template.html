@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Noto Rupture - Earthquake &amp; Tsunami Report</title>
+<meta name="description" content="Locating the 1 January 2024 Mw 7.5 Noto Peninsula earthquake from raw seismograms: P and S picks, triangulation, a Wadati origin time, the focal mechanism and a tsunami warning decision, checked against USGS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=STIX+Two+Text:ital@0;1&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="sheet">
+
+<div class="topbar">
+  <span class="src">USGS us6000m0xl · IRIS / EarthScope</span>
+  <div class="tb-right">
+    <button id="theme-toggle" class="theme-btn" type="button" aria-pressed="false"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.2"/><path d="M8 1.8 A6.2 6.2 0 0 1 8 14.2 Z"/></svg><span>Dark mode</span></button>
+    <span class="who">Gergo Meszaros</span>
+  </div>
+</div>
+
+<!-- ============================ 01 ============================ -->
+<section class="plate" id="overview">
+  <div class="plate-head">
+    <div>
+      <h1>Noto Rupture - Earthquake &amp; Tsunami Report <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-overview" aria-label="Overview: explain in simple terms">?</button></h1>
+      <p class="sub sub-hero">A warning-centre report on the 1 January 2024 M<sub>w</sub> 7.5 Noto Peninsula earthquake, built from raw seismograms</p>
+    </div>
+    <button class="replay" type="button" data-replay="xsec">Redraw</button>
+  </div>
+  <div class="eli" id="eli-overview" hidden><p class="eli-k">Overview · in simple terms</p><p>When a fault slips, it sends out two kinds of wave. The P-wave is faster and arrives first; the S-wave is slower and arrives later. The further away you are, the bigger the gap between them, so each station's gap tells you its distance to the earthquake. Draw a circle of that size around every station and the earthquake sits where the circles meet. The same gaps also give the start time, and the direction of the very first shake shows which way the fault moved. That last part decides whether the sea floor was lifted, and so whether to warn of a tsunami.</p></div>
+  <div class="hero-intro">
+    <p class="epigraph"><i>Jishin</i> (地震): ‘earth-shaking’, the Japanese word for an earthquake, written with the characters for <i>ground</i> and <i>to quake</i>.</p>
+    <p>At 16:10 local time on New Year's Day 2024, a fault beneath the tip of the Noto Peninsula slipped, shaking the coast at intensity Shindo 7 and sending a tsunami into the Sea of Japan. Nine seismometers between 130 km and 5,600 km away recorded it. This site follows the steps of a warning-centre practical: pick the waves, find the distance, triangulate the epicenter, find the origin time, read the fault motion and decide on a tsunami warning. It then does what the practical could not, and checks every answer against the official solution.</p>
+  </div>
+  <div class="figure drawing" id="xsec">
+    <svg viewBox="0 0 1000 400" role="img" aria-labelledby="xsec-t xsec-d">
+      <title id="xsec-t">Schematic northwest–southeast cross-section through the Noto Peninsula</title>
+      <desc id="xsec-d">A reverse fault dips about 37 degrees to the southeast beneath the Noto Peninsula. The block above the fault moves up and to the northwest, lifting the seafloor offshore and the coast, which pushes the overlying water up into a tsunami.</desc>
+      <defs><pattern id="hx-ground" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" class="hatch-line"/></pattern></defs>
+      <!-- sea -->
+      <path class="sea" d="M70 112 L590 112 L540 150 L470 168 L430 172 L380 182 L70 186 Z"/>
+      <!-- crust (hatched) -->
+      <path class="hatch-ground" d="M70 186 L380 182 L430 172 L470 168 L540 150 L590 112 L640 96 L760 92 L960 94 L960 380 L70 380 Z"/>
+      <!-- surfaces -->
+      <path data-draw class="ln" d="M70 112 L590 112"/>
+      <path data-draw class="ln bold" d="M70 186 L380 182 L430 172 L470 168 L540 150 L590 112 L640 96 L760 92 L960 94"/>
+      <!-- fault: dips 37 deg SE (dx 1, dy 0.754) -->
+      <path data-draw class="ln bold" d="M392 180 L640 367"/>
+      <path class="ln faint dash" d="M392 180 L330 133"/>
+      <!-- slip arrows -->
+      <path data-draw class="ln" d="M560 286 L500 241"/><path class="fill-ink" d="M500 241 L514 244 L506 254 Z"/>
+      <path data-draw class="ln" d="M452 258 L504 297"/><path class="fill-ink" d="M504 297 L490 294 L498 284 Z"/>
+      <!-- hypocentre -->
+      <circle cx="600" cy="337" r="7" class="fill-ink"/><circle cx="600" cy="337" r="13" class="ln thin"/>
+      <!-- uplift + tsunami -->
+      <path data-draw class="ln" d="M420 104 q10 -10 20 0 q10 10 20 0"/>
+      <path data-draw class="ln thin" d="M362 104 q10 -8 20 0 M478 104 q10 -8 20 0"/>
+      <path data-draw class="ln thin" d="M318 106 q9 -6 18 0 M522 106 q9 -6 18 0"/>
+      <path class="ln" d="M610 80 L610 58"/><path class="fill-ink" d="M610 52 L604 62 L616 62 Z"/>
+      <!-- labels -->
+      <text x="78" y="134" class="lbl">Sea of Japan</text>
+      <text x="78" y="148" class="lbl-sub">northwest</text>
+      <text x="955" y="80" class="lbl" text-anchor="end">Noto Peninsula</text>
+      <text x="955" y="66" class="lbl-sub" text-anchor="end">southeast · Suzu, Wajima</text>
+      <text x="626" y="62" class="lbl-sub">coast uplifted, up to ~5 m</text>
+      <text x="440" y="86" class="lbl" text-anchor="middle">Tsunami</text>
+      <text x="300" y="230" class="lbl">Seafloor lifted</text>
+      <text x="300" y="244" class="lbl-sub">at the fault's upper edge</text>
+      <text x="660" y="300" class="lbl">Reverse fault</text>
+      <text x="660" y="314" class="lbl-sub">strike 47°, dips 37° southeast</text>
+      <text x="584" y="350" class="lbl" text-anchor="end">Hypocentre</text>
+      <text x="584" y="364" class="lbl-sub" text-anchor="end">~10 km deep (USGS)</text>
+      <text x="565" y="234" class="lbl-sub">hanging wall rides up</text>
+      <text x="70" y="398" class="lbl-sub">Schematic, not to scale</text>
+    </svg>
+  </div>
+  <div class="hero-figs">
+    <div><div class="v">{{W_OT}}</div><div class="k">origin time, UTC (Wadati)</div></div>
+    <div><div class="v">{{PG_ERR}} km</div><div class="k">best epicenter vs USGS</div></div>
+    <div><div class="v">47° / 37° / 100°</div><div class="k">reverse fault, dips SE</div></div>
+    <div><div class="v">Issued</div><div class="k">tsunami warning decision</div></div>
+  </div>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>01 / 09</span></div>
+</section>
+
+<!-- ============================ 02 ============================ -->
+<section class="plate" id="picks">
+  <div class="plate-head">
+    <div>
+      <h2>Seismic data analysis <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-picks" aria-label="Sheet 2: explain in simple terms">?</button></h2>
+      <p class="sub">When did each wave arrive?</p>
+    </div>
+  </div>
+  <div class="eli" id="eli-picks" hidden><p class="eli-k">Sheet 2 · in simple terms</p><p>Each station records the ground moving up–down (Z), north–south (N) and east–west (E). The P-wave arrives first and pushes the ground along its path, so it shows up best on Z. The S-wave arrives later and shakes the ground side to side, across its path. Turning N and E into the "across the path" direction (T) hides most of the P-wave's leftover shaking, so the S-wave's start is easier to see. The two lines on each record mark those start times.</p></div>
+  <div class="plate-body">
+    <div class="figure fig"><a href="figures/light/fig1_seismograms.png" target="_blank"><img class="lt" src="figures/light/fig1_seismograms.png" alt="Seismograms for MAJO, INCN, KAPI and COLA with P and S picks"><img class="dk" src="figures/dark/fig1_seismograms.png" alt=""></a>
+      <p class="fig-cap"><b>Figure I</b>Z, N, E and the rotated transverse (T) component for MAJO, INCN, KAPI and COLA. Solid line: P pick. Dashed line: S pick. <a href="figures/light/fig1b_all_stations.png" target="_blank">All nine stations</a></p></div>
+    <div class="notes">
+      <p><span class="kicker">Method.</span> The dataset comprised three-component waveforms (Z, N, E) for nine seismic stations. For increased accuracy, the vertical (Z) component was used to identify the P-wave arrivals, due to their strong particle motion. For the S-waves, the north (N) and east (E) components were not enough, so I rotated them into the <strong>transverse (T)</strong> component, perpendicular to the path from the earthquake, where the P coda is weakest and the S onset stands out. The direction for that rotation came from each station's own P-wave motion, not from the official location.</p>
+      <p><span class="kicker">Uncertainty.</span> The S-wave arrivals have a larger uncertainty than the P-wave arrivals. This is due to the fact that the P-wave is the first signal to arrive, making its onset large and, thus, very distinguishable from the silence before it. The S-wave arrives after the ground is already shaking from the P-wave coda, obscuring the precise inflection point, as the arrival is masked by the background interference. Here the ground was <strong>already shaking before the mainshock</strong>, from a M5.5 foreshock four minutes earlier, so every S pick carries its own uncertainty.</p>
+    </div>
+  </div>
+  <div class="tablewrap"><table aria-label="Table I: arrival picks">
+    <thead><tr><th>#</th><th>Station</th><th>Net</th><th class="num">Lat</th><th class="num">Lon</th><th>P arrival (UTC)</th><th>S arrival (UTC)</th><th class="num">S ±</th><th>Note</th></tr></thead>
+    <tbody>{{T1}}</tbody>
+  </table></div>
+  <p class="caption">Table I · P and S arrival picks for each of the nine stations, networks IU, II and IC. Several sensors (KAPI, COLA, GUMO, TATO) sit at an angle to true north; their horizontals were rotated using each sensor's published azimuth before picking.</p>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>02 / 09</span></div>
+</section>
+
+<!-- ============================ 03 ============================ -->
+<section class="plate" id="distance">
+  <div class="plate-head">
+    <div>
+      <h2>From lag to distance <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-distance" aria-label="Sheet 3: explain in simple terms">?</button></h2>
+      <p class="sub">How far away was it?</p>
+    </div>
+  </div>
+  <div class="eli" id="eli-distance" hidden><p class="eli-k">Sheet 3 · in simple terms</p><p>Think of two runners leaving the same start line, one faster than the other. The further the finish line, the bigger the gap between them when they cross it. The P and S waves are those runners. There are two ways to turn the gap into a distance: assume both waves run at a constant speed in a straight line, or read it off curves calculated for the real Earth, where waves speed up with depth and bend. Slide the lag to see the two answers drift apart with distance.</p></div>
+  <div class="plate-body">
+    <div class="figure fig"><a href="figures/light/fig2_traveltime.png" target="_blank"><img class="lt" src="figures/light/fig2_traveltime.png" alt="Travel-time graph with stations plotted on the S-P curve"><img class="dk" src="figures/dark/fig2_traveltime.png" alt=""></a>
+      <p class="fig-cap"><b>Figure II</b>Epicentral distance vs travel time (iasp91). Each station sits on the S − P curve at its measured lag; reading straight down gives its distance. Numbers match Table I.</p></div>
+    <div class="controls">
+      <div class="ctl">
+        <label for="sp-slider"><span>S − P lag</span><span id="sp-v">114 s</span></label>
+        <input id="sp-slider" type="range" min="5" max="470" value="114">
+      </div>
+      <div class="readout" aria-live="polite">
+        <div class="big"><span>Δ</span> <b>=</b> <span id="sp-graph">1,114</span> <b>km</b></div>
+        <div class="tag">Travel-time graph · <span id="sp-deg">10.0°</span></div>
+        <div class="small">Constant velocity: <span id="sp-const">1,056 km</span> · difference <span id="sp-diff">−58 km</span></div>
+      </div>
+      <div class="notes">
+        <p><span class="kicker">Two methods.</span> After identifying the P and S arrival times for all nine stations, I calculated the radial distances using the travel-time graph, with standard curves from the iasp91 Earth model, and the constant velocity method, assuming constant velocities of 8 km/s and 4.3 km/s for the P and S waves respectively.</p>
+      </div>
+    </div>
+  </div>
+  <div class="formula">Distance = (t<sub>S</sub> − t<sub>P</sub>) × 1 / ( 1/V<sub>S</sub> − 1/V<sub>P</sub> )</div>
+  <p class="caption">V<sub>P</sub> = 8 km/s and V<sub>S</sub> = 4.3 km/s, the same constants as the practical. The calculation method assumes a homogeneous crust, where the velocity is constant and the waves travel in straight lines.</p>
+  <div class="tablewrap"><table aria-label="Table II: lags and distances">
+    <thead><tr><th>Station</th><th class="num">t<sub>P</sub> (s)</th><th class="num">t<sub>S</sub> (s)</th><th class="num">S − P (s)</th><th class="num">Constant velocity (km)</th><th class="num">Travel-time graph (km)</th><th class="num">Graph (°)</th></tr></thead>
+    <tbody>{{T2}}</tbody>
+  </table></div>
+  <div class="twin">
+    <div class="notes">
+      <p><span class="kicker">Why UTC.</span> The UTC time was assumed as it is the global standard for seismology (USGS, 2023), and it seemed the most rational with the stations spanning different time zones (MAJO, UTC+9; KMI, UTC+8; KAPI, UTC+8; COLA, UTC−9). Times in Table II are seconds after 07:10:00.00 (UTC).</p>
+    </div>
+    <div class="notes">
+      <p><span class="kicker">Which method.</span> The graph method was used to find the true epicenter. The calculation method assumes the waves travel in a straight line through a uniform medium, which for Earth is an oversimplification. The graph uses curves derived from established Earth models that account for waves travelling through layers of varying pressure and density, causing refraction and acceleration. At MAJO the two differ by about 20 km; at COLA, by more than 1,800 km.</p>
+    </div>
+  </div>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>03 / 09</span></div>
+</section>
+
+<!-- ============================ 04 ============================ -->
+<section class="plate" id="epicenter">
+  <div class="plate-head">
+    <div>
+      <h2>Locating the true epicenter <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-epicenter" aria-label="Sheet 4: explain in simple terms">?</button></h2>
+      <p class="sub">Where do the circles meet?</p>
+    </div>
+    <a class="replay" href="downloads/noto_triangulation.kml" download>Google Earth file</a>
+  </div>
+  <div class="eli" id="eli-epicenter" hidden><p class="eli-k">Sheet 4 · in simple terms</p><p>Each station only knows how far away the earthquake was, not in which direction, so its answer is a circle. Two circles cross at two points; a third picks one of them. With nine, the circles should all pass through one spot. Here they don't quite: most are a little too big, for a reason sheet 09 explains. The cross marks the point that sits closest to all of them at once.</p></div>
+  <div class="fig-pair">
+    <div class="fig"><a href="figures/light/fig3a_map_const.png" target="_blank"><img class="lt" src="figures/light/fig3a_map_const.png" alt="Circles from constant-velocity distances"><img class="dk" src="figures/dark/fig3a_map_const.png" alt=""></a>
+      <p class="fig-cap"><b>Figure IIIa</b>Triangulation with the constant-velocity distances.</p></div>
+    <div class="fig"><a href="figures/light/fig3b_map_graph.png" target="_blank"><img class="lt" src="figures/light/fig3b_map_graph.png" alt="Circles from travel-time graph distances"><img class="dk" src="figures/dark/fig3b_map_graph.png" alt=""></a>
+      <p class="fig-cap"><b>Figure IIIb</b>Triangulation with the travel-time-graph distances, used for the epicenter.</p></div>
+  </div>
+  <div class="plate-body">
+    <div class="figure fig"><a href="figures/light/fig3c_map_zoom.png" target="_blank"><img class="lt" src="figures/light/fig3c_map_zoom.png" alt="Zoom on where the circles meet"><img class="dk" src="figures/dark/fig3c_map_zoom.png" alt=""></a>
+      <p class="fig-cap"><b>Figure IIIc</b>Zoom on central Japan. Star: USGS epicenter. Cross: best fit to the nine S − P circles. Ring: the P-arrival grid search of sheet 08.</p></div>
+    <div class="readout-col controls">
+      <div class="readout">
+        <div class="tag">Epicenter · S − P circles</div>
+        <div class="big" style="font-size:24px">{{CF_LAT}}<br>{{CF_LON}}</div>
+        <div class="small">{{CF_ERR}} km from the USGS epicenter</div>
+      </div>
+      <div class="notes">
+        <p>The ‘true epicenter’ was picked as the point closest to all nine circles, with the less certain S picks given less weight. The nearest station, MAJO, is the strongest constraint: its circle is only 134 km across, and its distance came out within a few kilometers of the true value.</p>
+        <p>However, there is an uncertainty in the location from the selection of the S waves, as mere seconds can increase the radial error by tens of kilometers. Most of the circles here are systematically too large.</p>
+        <p><span class="kicker">Try it.</span> Open the Google Earth file in Google Earth Pro (File → Open), place your own pin where the circles meet, then switch on the hidden <i>answer key</i> folder.</p>
+      </div>
+    </div>
+  </div>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>04 / 09</span></div>
+</section>
+
+<!-- ============================ 05 ============================ -->
+<section class="plate" id="origin">
+  <div class="plate-head">
+    <div>
+      <h2>Origin time calculation <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-origin" aria-label="Sheet 5: explain in simple terms">?</button></h2>
+      <p class="sub">When did the rupture begin?</p>
+    </div>
+  </div>
+  <div class="eli" id="eli-origin" hidden><p class="eli-k">Sheet 5 · in simple terms</p><p>The gap between the two waves grows steadily the later the first wave arrives. Plot one against the other and the points fall on a straight line. Follow the line back to where the gap is zero: that is the moment the two waves were together, at the source. That moment is the start of the earthquake.</p></div>
+  <div class="plate-body">
+    <div class="figure fig"><a href="figures/light/fig4_wadati.png" target="_blank"><img class="lt" src="figures/light/fig4_wadati.png" alt="Wadati plot"><img class="dk" src="figures/dark/fig4_wadati.png" alt=""></a>
+      <p class="fig-cap"><b>Figure IV</b>Wadati plot: S − P lag against P arrival, with each S pick's uncertainty and the line of best fit used to calculate the origin time.</p></div>
+    <div class="controls">
+      <div class="readout">
+        <div class="tag">Origin time · x-intercept {{W_X0}} s</div>
+        <div class="big">{{W_OT}}</div>
+        <div class="small">UTC · R² = {{W_R2}} · V<sub>P</sub>/V<sub>S</sub> ≈ {{W_VPVS}}</div>
+      </div>
+      <div class="notes">
+        <p>To calculate the origin time, a Wadati plot had to be produced comparing the lag time, the difference between the S and P arrivals, with the P arrival time, and plotting a line of best fit to see at what time the S − P difference would be zero, as it would only be that at the epicenter. From Figure IV, that time is {{W_X0}} seconds (the x-intercept) from the reference time of 07:10:00.00 (UTC), giving an origin time of <strong>{{W_OT}} (UTC)</strong>.</p>
+        <p>The Wadati plot also has a high R² value ({{W_R2}}), close to one. A high R² alone does not make the answer right, though: the official origin time is 07:10:09, {{W_ERR}} s later. A tight fit can still be shifted if every S pick is late by a similar amount.</p>
+      </div>
+    </div>
+  </div>
+  <div class="formula">t<sub>S</sub> − t<sub>P</sub> = (V<sub>P</sub>/V<sub>S</sub> − 1)(t<sub>P</sub> − t<sub>0</sub>)</div>
+  <p class="caption">The slope of the line is V<sub>P</sub>/V<sub>S</sub> − 1 ({{W_SLOPE}} here, so V<sub>P</sub>/V<sub>S</sub> ≈ {{W_VPVS}}, close to the 1.73–1.8 typical of the crust and mantle). Where the line crosses zero, t<sub>P</sub> = t<sub>0</sub>, the origin time.</p>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>05 / 09</span></div>
+</section>
+
+<!-- ============================ 06 ============================ -->
+<section class="plate" id="focal">
+  <div class="plate-head">
+    <div>
+      <h2>Focal mechanism analysis <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-focal" aria-label="Sheet 6: explain in simple terms">?</button></h2>
+      <p class="sub">Which way did the fault move?</p>
+    </div>
+  </div>
+  <div class="eli" id="eli-focal" hidden><p class="eli-k">Sheet 6 · in simple terms</p><p>When a fault slips, the ground is pushed towards some stations and pulled away from others. A "beach ball" maps that pattern: dark where the first shake was a push, light where it was a pull. A dark band across the middle means one block was shoved up over the other, a reverse fault. Several of the nine stations recorded a clean first shake, and every one of them falls on the side of the ball this fault predicts.</p></div>
+  <div class="figure fig"><a href="figures/light/fig5_focal_mechanism.png" target="_blank"><img class="lt" src="figures/light/fig5_focal_mechanism.png" alt="Focal mechanism with first motions and nodal planes"><img class="dk" src="figures/dark/fig5_focal_mechanism.png" alt=""></a>
+    <p class="fig-cap"><b>Figure V</b>Left: JMA focal mechanism, lower hemisphere, with P-wave first motions from Figure I's stations. Right: the two nodal planes; solid is the true fault plane.</p></div>
+  <div class="twin">
+    <div class="notes">
+      <p><span class="kicker">Reading it.</span> The JMA solution has nodal planes of strike 47°, dip 37°, rake 100° and strike 215°, dip 54°, rake 82° (Fujii &amp; Satake, 2024). Firstly, the strike of the two planes is read where the dividing lines meet the rim: <strong>47°</strong> and <strong>215°</strong>. Secondly, from the shaded and unshaded distribution: instead of four quadrants, the shaded region is a single band across the centre, so the motion is <strong>predominantly dip-slip</strong>. Thirdly, the centre is shaded, the compressional quadrant, which is indicative of a <strong>reverse (thrust) fault</strong>, with rakes close to 90°.</p>
+      <p><span class="kicker">Tested.</span> Five stations had a clear first motion: four up (compression), MAJO down (dilatation). All five fall where the mechanism predicts. The other four were too contaminated by the foreshock to call, and are shown hollow rather than guessed.</p>
+    </div>
+    <div class="notes">
+      <p><span class="kicker">Which plane.</span> I researched which faults are found near the epicenter to determine which plane was the true fault plane and which was auxiliary. Offshore of the Noto Peninsula, several active <strong>reverse faults dipping southeast with NE–SW strikes</strong> are mapped. The Earthquake Research Committee concluded the source was a reverse fault mainly dipping southeast, extending roughly 150 km NE–SW, with slip spreading bilaterally (ERC, 2024).</p>
+      <p>The 47° plane dips 37° to the southeast, confirming that the true fault plane is most likely the <strong>47° strike plane</strong>: a thrust in which the peninsula side rode up and over the seafloor to its northwest.</p>
+    </div>
+  </div>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>06 / 09</span></div>
+</section>
+
+<!-- ============================ 07 ============================ -->
+<section class="plate" id="tsunami">
+  <div class="plate-head">
+    <div>
+      <h2>Tsunami warning decision <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-tsunami" aria-label="Sheet 7: explain in simple terms">?</button></h2>
+      <p class="sub">Does this lift the sea?</p>
+    </div>
+  </div>
+  <div class="eli" id="eli-tsunami" hidden><p class="eli-k">Sheet 7 · in simple terms</p><p>A tsunami starts when the seafloor suddenly moves up or down and drags the whole column of water above it along. A fault that slides sideways barely moves the water. A reverse fault like this one pushes the seafloor up. Here it happened right under the coast, so the waves could arrive within a minute or two, before any warning could get out.</p></div>
+  <div class="stats">
+    <div><div class="k">Decision</div><div class="v">Issued</div></div>
+    <div><div class="k">Motion</div><div class="v">Vertical (thrust)</div></div>
+    <div><div class="k">Depth</div><div class="v">~10 km</div></div>
+  </div>
+  <div class="twin">
+    <div class="notes">
+      <p><span class="kicker">The decision.</span> Based on the focal mechanism of the rupture, a reverse fault with nearly pure dip-slip motion, the dominant motion is vertical. Vertical seafloor displacement provides a direct source for tectonic tsunami generation, as it disturbs the overlying water column, producing outward-propagating waves. Unlike an oblique strike-slip rupture, where much of the motion is sideways and the tsunami case leans on secondary submarine landslides, the tectonic case here is direct. The strong shaking also weakens slopes and causes liquefaction, structural damage and landslides along the coast, contributing to the hazardous environment.</p>
+      <p>With the towns of Suzu, Wajima and Noto essentially above the rupture, in the extreme near field, a warning should be issued immediately on the mechanism and location alone. To reduce the risk of a false alarm, I would like high-resolution bathymetry, information regarding the tide and sea level, data on vertical crustal deformation from GNSS, and real-time tide gauges to track any anomalous waves.</p>
+    </div>
+    <div class="notes">
+      <p><span class="kicker">What actually happened.</span> JMA issued tsunami warnings about two minutes after the earthquake and upgraded the Noto warning to a <strong>major tsunami warning</strong> roughly ten minutes later, the first since 2011. Modelling suggests the first waves reached Suzu, Wajima, Noto and Nanao within 1–2 minutes, before the warning was out (nippon.com, 2024).</p>
+      <p>Field surveys found tsunami flood heights of over 4 m in Noto Town and Suzu, and run-up over 5 m in Joetsu, Niigata (ERC, 2024), while the peninsula itself rose by up to about 5 m on its west coast (Ma et al., 2024). The decision above matches the real one. The timing it reveals, a near-field tsunami outrunning its own warning, is why "evacuate when the shaking stops" matters as much as the warning.</p>
+    </div>
+  </div>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>07 / 09</span></div>
+</section>
+
+<!-- ============================ 08 ============================ -->
+<section class="plate" id="validation">
+  <div class="plate-head">
+    <div>
+      <h2>Validation <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-validation" aria-label="Sheet 8: explain in simple terms">?</button></h2>
+      <p class="sub">How close did it get?</p>
+    </div>
+  </div>
+  <div class="eli" id="eli-validation" hidden><p class="eli-k">Sheet 8 · in simple terms</p><p>The P-wave times are sharp; the S-wave times are fuzzy. So, instead of using the gap between them, test thousands of possible locations on a grid: for each one, predict when the P-wave should have reached every station and measure how far off the predictions are. The location with the smallest error wins. Using only the reliable measurements cuts the error by three-quarters.</p></div>
+  <div class="tablewrap"><table aria-label="Results compared with USGS">
+    <thead><tr><th>Quantity</th><th>This study</th><th>USGS</th><th class="num">Error</th></tr></thead>
+    <tbody>
+      <tr><td>Epicenter · S − P circles</td><td>{{CF_LAT}}, {{CF_LON}}</td><td>37°29′13″N, 137°16′16″E</td><td class="num">{{CF_ERR}} km</td></tr>
+      <tr><td>Epicenter · P-arrival grid search</td><td class="em">{{PG_LAT}}, {{PG_LON}}</td><td>37°29′13″N, 137°16′16″E</td><td class="num em">{{PG_ERR}} km</td></tr>
+      <tr><td>Origin time · Wadati plot</td><td>{{W_OT}}</td><td>07:10:09</td><td class="num">{{W_ERR}} s early</td></tr>
+      <tr><td>Origin time · P-arrival grid search</td><td class="em">{{PG_OT}}</td><td>07:10:09</td><td class="num em">{{PG_TERR}} s late</td></tr>
+      <tr><td>Fault</td><td>Reverse, 47° plane dipping SE</td><td>Reverse, NE–SW strike</td><td class="num">consistent</td></tr>
+    </tbody>
+  </table></div>
+  <div class="plate-body">
+    <div class="figure fig"><a href="figures/light/fig6_p_gridsearch.png" target="_blank"><img class="lt" src="figures/light/fig6_p_gridsearch.png" alt="P-arrival grid search misfit map"><img class="dk" src="figures/dark/fig6_p_gridsearch.png" alt=""></a>
+      <p class="fig-cap"><b>Figure VI</b>RMS misfit between predicted and observed P arrivals across the region; darker is a better fit. The 5-second contour encloses the USGS epicenter.</p></div>
+    <div class="notes">
+      <p><span class="kicker">The improvement.</span> The P picks are sharp, to well under a second; the S picks are the weak link. So, instead of drawing S − P circles, I searched a grid of candidate epicenters. For each point I predicted when the P-wave should reach each station, solved for the origin time that fits best, and measured how badly the predictions missed the picks. This is the same logic agencies use, with nine stations instead of thousands.</p>
+      <p>The best point lands <strong>{{PG_ERR}} km from the USGS epicenter</strong>, with an origin time within {{PG_TERR}} s and an average misfit of {{PG_RMS}} s per station.</p>
+    </div>
+  </div>
+  <div class="tablewrap"><table aria-label="Table III: station-by-station comparison">
+    <thead><tr><th>Station</th><th class="num">Graph distance (km)</th><th class="num">True distance (km)</th><th class="num">Difference</th><th class="num">S − P excess</th><th class="num">P residual</th></tr></thead>
+    <tbody>{{T3}}</tbody>
+  </table></div>
+  <p class="caption">Table III · Each station against the official epicenter. S − P excess: the measured lag minus the lag iasp91 predicts at that station's true distance.</p>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>08 / 09</span></div>
+</section>
+
+<!-- ============================ 09 ============================ -->
+<section class="plate" id="conclusion">
+  <div class="plate-head">
+    <div>
+      <h2>What it means <button class="eli-btn" type="button" aria-expanded="false" aria-controls="eli-conclusion" aria-label="Sheet 9: explain in simple terms">?</button></h2>
+      <p class="sub">Why were the S-waves late?</p>
+    </div>
+  </div>
+  <div class="eli" id="eli-conclusion" hidden><p class="eli-k">Sheet 9 · in simple terms</p><p>This earthquake started quietly. For its first 15–20 seconds the fault crept slowly before the big slip took off. The first P-wave is so clean that even that quiet start shows up. The first S-wave from the quiet start, though, was lost in the shaking already going on, so the S-wave seen at each station came from the big slip, about 20 seconds later. Every gap was therefore too long by about the same amount, which made every circle too big.</p></div>
+  <div class="plate-body">
+    <div class="figure fig"><a href="figures/light/fig7_s_delay.png" target="_blank"><img class="lt" src="figures/light/fig7_s_delay.png" alt="S-P excess by station compared with the slow initial rupture"><img class="dk" src="figures/dark/fig7_s_delay.png" alt=""></a>
+      <p class="fig-cap"><b>Figure VII</b>How much longer each measured S − P lag is than the iasp91 prediction at that station's distance. Hatched band: the published slow initial rupture. YSS is the least reliable pick.</p></div>
+    <div class="notes">
+      <p><span class="kicker">The pattern.</span> Apart from MAJO, the S picks are consistently late, by a median of about <strong>{{EX_MED}} s</strong>. That is too consistent to be bad picking. It matches what was later published: the Noto rupture began with a slow initial phase lasting <strong>15–20 seconds</strong> before the main slip took off (Ma et al., 2024), with another study describing about 25 seconds (Peng et al., 2024).</p>
+      <p><span class="kicker">Why.</span> The P onset is the very first motion, so even the weak start shows above the quiet background. The S onset arrives into ground already shaking, so the weak S is invisible and the first S that can be seen comes from the main rupture. Every S − P lag grows by about the same amount, which enlarges every circle and pulls the Wadati intercept earlier while barely touching R². At MAJO, 1.2° away, the weak S had not yet been drowned out.</p>
+    </div>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>Findings</h3>
+      <ol>
+        <li>Epicenter from S − P triangulation: {{CF_ERR}} km from USGS. From P arrivals only: {{PG_ERR}} km.</li>
+        <li>Origin time {{W_OT}} UTC from the Wadati plot (R² = {{W_R2}}); {{PG_OT}} from the P-only search, against 07:10:09.</li>
+        <li>Reverse faulting on a plane striking 47° and dipping 37° SE, confirmed by five clear P first motions.</li>
+        <li>Tsunami warning: issued. Thrust motion beneath the coast lifts the seafloor directly, in the extreme near field.</li>
+      </ol>
+    </div>
+    <div>
+      <h3>What the real data adds</h3>
+      <ul>
+        <li>A systematic S delay of ~{{EX_MED}} s, matching the published slow start of this rupture, explains most of the triangulation and origin-time error.</li>
+        <li>Building the location on the most reliable measurement (P) cuts the error from {{CF_ERR}} km to {{PG_ERR}} km.</li>
+        <li>A high R² on the Wadati plot hides a constant offset; checking against an independent answer exposes it.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Reproduce</h3>
+      <pre>pip install -r python/requirements.txt
+python python/run_all.py
+python python/build_site.py
+
+% MATLAB, from matlab/
+run_all</pre>
+      <p style="margin-top:10px">Change a pick in <code>data/picks.csv</code> (or <code>matlab/noto_picks.csv</code>) and rerun; every table, figure and map updates. Code: <a href="https://github.com/gergomesz/noto-2024-earthquake">github.com/gergomesz/noto-2024-earthquake</a>.</p>
+    </div>
+    <div>
+      <h3>Sources</h3>
+      <p>Earthquake Research Committee (2024). <i>Evaluation of the 2024 Noto Peninsula Earthquakes</i>, 9 Feb 2024. <a href="https://www.jishin.go.jp/main/chousa/24feb_noto/index-e.htm">jishin.go.jp</a></p>
+      <p>Fujii, Y., Satake, K. (2024). Slip distribution of the 2024 Noto Peninsula earthquake (M<sub>JMA</sub> 7.6) estimated from tsunami waveforms and GNSS data. <i>Earth, Planets and Space</i>. <a href="https://doi.org/10.1186/s40623-024-01991-z">doi:10.1186/s40623-024-01991-z</a></p>
+      <p>Ma, Z., Zeng, H., Luo, H., et al. (2024). Slow rupture in a fluid-rich fault zone initiated the 2024 M<sub>w</sub> 7.5 Noto earthquake. <i>Science</i> 385, 866–871. <a href="https://doi.org/10.1126/science.ado5143">doi:10.1126/science.ado5143</a></p>
+      <p>Peng, Z., Lei, X., Wang, Q.-Y., et al. (2024). <i>Earthquake Research Advances</i>. <a href="https://doi.org/10.1016/j.eqrea.2024.100332">doi:10.1016/j.eqrea.2024.100332</a></p>
+      <p>nippon.com (2024). Lessons from the Noto Peninsula earthquake and tsunami. <a href="https://www.nippon.com/en/articles/-/15014">nippon.com</a> · USGS (2024). Event us6000m0xl. <a href="https://earthquake.usgs.gov/earthquakes/eventpage/us6000m0xl">earthquake.usgs.gov</a> · USGS (2023). Why earthquakes are reported in UTC. <a href="https://www.usgs.gov/faqs/what-utc-and-why-do-you-report-earthquakes-utc">usgs.gov</a></p>
+      <p>Kennett, B.L.N., Engdahl, E.R. (1991). iasp91. <i>GJI</i> 105, 429–465. · Beyreuther, M., et al. (2010). ObsPy. <i>SRL</i> 81, 530–533. · Waveforms: IRIS/EarthScope, networks <a href="https://doi.org/10.7914/SN/IU">IU</a>, <a href="https://doi.org/10.7914/SN/II">II</a>, <a href="https://doi.org/10.7914/SN/IC">IC</a>. Coastlines: Natural Earth.</p>
+      <p>An independent study project, modelled on a Natural Hazards earthquake &amp; tsunami practical and rebuilt from real data.</p>
+    </div>
+  </div>
+  <div class="plate-foot"><span>Noto Peninsula, Japan / Seismology</span><span>09 / 09</span></div>
+</section>
+
+</div>
+<script src="assets/data.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
