@@ -1,0 +1,65 @@
+{
+ "MAJO": {
+  "pol": -1,
+  "az": 144.1,
+  "takeoff": 94.7,
+  "snr": 4.1,
+  "t_first": -0.05
+ },
+ "ERM": {
+  "pol": -1,
+  "az": 41.4,
+  "takeoff": 45.8,
+  "snr": 4.2,
+  "t_first": 2.75
+ },
+ "INCN": {
+  "pol": -1,
+  "az": 274.1,
+  "takeoff": 45.8,
+  "snr": 1.5,
+  "t_first": -0.3
+ },
+ "YSS": {
+  "pol": 1,
+  "az": 20.5,
+  "takeoff": 45.7,
+  "snr": 4.1,
+  "t_first": -0.25
+ },
+ "TATO": {
+  "pol": 1,
+  "az": 232.4,
+  "takeoff": 35.1,
+  "snr": 4.1,
+  "t_first": 2.2
+ },
+ "GUMO": {
+  "pol": 1,
+  "az": 162.5,
+  "takeoff": 28.4,
+  "snr": 4.2,
+  "t_first": 2.72
+ },
+ "KMI": {
+  "pol": 1,
+  "az": 257.7,
+  "takeoff": 27.3,
+  "snr": 4.0,
+  "t_first": -0.2
+ },
+ "KAPI": {
+  "pol": 1,
+  "az": 205.3,
+  "takeoff": 24.5,
+  "snr": 4.1,
+  "t_first": -0.25
+ },
+ "COLA": {
+  "pol": 1,
+  "az": 32.2,
+  "takeoff": 23.3,
+  "snr": 4.2,
+  "t_first": 0.32
+ }
+}

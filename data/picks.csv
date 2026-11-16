@@ -1,0 +1,10 @@
+station,net,lat,lon,p_pick_utc,s_pick_utc,s_component,p_unc_s,s_unc_s,note
+MAJO,IU,36.54567,138.20406,07:10:32.47,07:10:49.24,T,0.1,1.0,sharp P and S
+ERM,II,42.015,143.1572,07:11:47.92,07:13:25.57,T,0.2,8.0,S emergent in P coda
+INCN,IU,37.47768,126.62436,07:12:18.87,07:14:12.47,T,0.3,8.0,S emergent in P coda
+YSS,IU,46.9587,142.7604,07:12:41.60,07:15:23.25,T,0.2,15.0,S ambiguous - lowest confidence
+TATO,IU,24.9735,121.4971,07:14:32.32,07:18:20.17,T,0.3,8.0,S emergent
+GUMO,IU,13.5893,144.8684,07:15:33.27,07:20:20.37,T,0.3,6.0,S clear at long period
+KMI,IC,25.14825,102.74748,07:16:34.37,07:22:16.87,T,0.3,8.0,S emergent
+KAPI,II,-5.0142,119.7517,07:18:27.84,07:25:20.40,T,0.2,3.0,S clear on transverse
+COLA,IU,64.873566,-147.861772,07:19:08.42,07:26:50.35,T,0.2,3.0,S clear on transverse
