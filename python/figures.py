@@ -1,5 +1,3 @@
-# makes all the figures for the site, a light and a dark version of each
-# (run analysis.py first)
 import sys, json, numpy as np
 from pathlib import Path
 
@@ -29,7 +27,7 @@ R = json.load(open(ROOT / "data/results.json"))
 S = R["stations"]
 REF = U(R["ref_time"])
 POL = json.load(open(ROOT / "data/polarities.json"))
-POLV = {"MAJO": -1, "YSS": 1, "KMI": 1, "KAPI": 1, "COLA": 1}  # only the ones I could actually see
+POLV = {"MAJO": -1, "YSS": 1, "KMI": 1, "KAPI": 1, "COLA": 1}
 BAZ = {
     "MAJO": 323,
     "ERM": 213,
@@ -199,7 +197,7 @@ def radP(sdr, az, toa):
     )
 
 
-def gc(strike, dip):  # draws a nodal plane (obspy beachballs use a linear projection, r = angle/90)
+def gc(strike, dip):
     t = np.radians(np.linspace(0, 180, 181))
     s = np.radians(strike)
     d = np.radians(dip)
@@ -218,7 +216,6 @@ def build(theme):
     out = ROOT / "figures" / theme
     out.mkdir(parents=True, exist_ok=True)
 
-    # fig 1 - seismograms
     def seis(stns, name, ncol=1):
         rows = int(np.ceil(len(stns) / ncol))
         fig, axs = plt.subplots(rows, ncol, figsize=(11 if ncol == 1 else 15, 2.25 * rows), squeeze=False)
@@ -269,7 +266,6 @@ def build(theme):
 
     seis(["MAJO", "INCN", "KAPI", "COLA"], "fig1_seismograms.png")
     seis(ORDER, "fig1b_all_stations.png", ncol=3)
-    # fig 2 - travel time graph
     fig, ax = plt.subplots(figsize=(10, 6.2))
     ax.plot(TT[:, 0], TT[:, 1] / 60, color=T["ink"], lw=1.6, label="P  (iasp91)")
     ax.plot(TT[:, 0], TT[:, 2] / 60, color=T["ink"], lw=1.6, ls=(0, (6, 3)), label="S  (iasp91)")
@@ -290,7 +286,6 @@ def build(theme):
     lab(ax, "travel time (minutes)", "y")
     ax.legend(loc="upper left")
     save(fig, out, "fig2_traveltime.png")
-    # fig 3 - triangulation maps
     for key, name in (("d_const_km", "fig3a_map_const.png"), ("d_graph_km", "fig3b_map_graph.png")):
         fig, ax = plt.subplots(figsize=(9, 7))
         ext = (95, 215, -12, 72)
@@ -324,7 +319,6 @@ def build(theme):
     lab(ax, "longitude (°E)")
     lab(ax, "latitude (°N)", "y")
     save(fig, out, "fig3c_map_zoom.png")
-    # fig 4 - wadati
     tp = np.array([o["tp"] for o in S])
     sp = np.array([o["sp"] for o in S])
     ot = U(round(U(W["origin_time"]).timestamp, 2))
@@ -377,7 +371,6 @@ def build(theme):
     lab(ax, "P-wave arrival (s after 07:10:00 UTC)")
     lab(ax, "S − P lag (s)", "y")
     save(fig, out, "fig4_wadati.png")
-    # fig 5 - beachball
     fig, axs = plt.subplots(1, 2, figsize=(11, 5.6))
     for k, ax in enumerate(axs):
         ax.set_xlim(-1.2, 1.2)
@@ -460,7 +453,6 @@ def build(theme):
         labelcolor=T["ink2"],
     )
     save(fig, out, "fig5_focal_mechanism.png")
-    # fig 6 - grid search misfit
     G = np.load(ROOT / "data/grid_rms.npy")
     ga = np.load(ROOT / "data/grid_axes.npy")
     fig, ax = plt.subplots(figsize=(8.6, 7.4))
@@ -476,7 +468,6 @@ def build(theme):
     lab(ax, "longitude (°E)")
     lab(ax, "latitude (°N)", "y")
     save(fig, out, "fig6_p_gridsearch.png")
-    # fig 7 - how late the S picks are
     lag = []
     dd = []
     for o in S:

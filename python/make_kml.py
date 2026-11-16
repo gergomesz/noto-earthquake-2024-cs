@@ -1,5 +1,3 @@
-# makes the google earth file (stations + circles)
-# the answer key folder starts hidden so you can place your own pin first
 import json, numpy as np
 from pathlib import Path
 from obspy.geodetics import kilometers2degrees

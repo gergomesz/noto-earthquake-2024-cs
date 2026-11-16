@@ -1,4 +1,3 @@
-# runs everything in order: python python/run_all.py
 import runpy, pathlib
 
 here = pathlib.Path(__file__).parent
