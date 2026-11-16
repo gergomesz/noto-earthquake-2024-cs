@@ -1,13 +1,12 @@
 (function () {
   "use strict";
-  // dark mode button (same as the puna site)
   (function themeToggle() {
     const btn = document.getElementById("theme-toggle");
     if (!btn) return;
     const root = document.documentElement;
     const mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
     let stored = null;
-    try { stored = localStorage.getItem("noto-theme"); } catch (e) { /* storage unavailable */ }
+    try { stored = localStorage.getItem("noto-theme"); } catch (e) {}
     if (stored === "dark" || stored === "light") root.setAttribute("data-theme", stored);
     const current = () => root.getAttribute("data-theme") || (mq && mq.matches ? "dark" : "light");
     const label = () => {
@@ -48,8 +47,6 @@
   }));
   document.querySelectorAll("[data-replay]").forEach((b) => b.addEventListener("click", () => drawOn(document.getElementById(b.dataset.replay))));
   drawOn(document.getElementById("xsec"));
-
-  // slider: S-P lag to distance
   const T = window.TT; const sl = document.getElementById("sp-slider");
   if (T && sl) {
     const VP = 8.0, VS = 4.3;
